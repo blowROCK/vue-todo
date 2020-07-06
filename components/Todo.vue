@@ -1,0 +1,216 @@
+<template>
+  <div id="todo" class="todo">
+    <div class="todo__container">
+      <div class="todo__container__header">
+        <div id="addItemBtn" class="todo__container__contents__header__btn"
+             @click="onAddBtn">
+          <i class="fa fa-plus" />
+        </div>
+        <div id="year" class="todo__container__header__year" />
+        <div id="month" class="todo__container__header__month" />
+        <div class="todo__container__header__week">
+          <div id="left" class="todo__container__header__week__arrows">
+            <div />
+          </div>
+          <ul id="week" class="todo__container__header__week__days" />
+          <div id="right" class="todo__container__header__week__arrows right">
+            <div />
+          </div>
+        </div>
+      </div>
+      <div class="todo__container__contents">
+        <div class="todo__container__contents__todoList">
+          <div id="do" class="todo__container__contents__todoList">
+            <div class="todoList__title do">
+              To Do
+            </div>
+            <ul id="doUl">
+              <li v-bind:id="todo.id" v-for="todo in todos" >
+                <Todo-item
+                  :id="todo.id"
+                  :text="todo.text"
+                  :isDone="todo.isDone"
+                  :isImportant="todo.isImportant"
+                />
+              </li>
+            </ul>
+          </div>
+          <div id="done" class="todo__container__contents__todoList">
+            <div class="todoList__title done">
+              Done
+            </div>
+            <ul id="doneUl" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import TodoItem from './TodoItem';
+import { generatorID } from '../static/util';
+
+export default {
+  name: 'Todo',
+  layout: 'default',
+  components: {
+    TodoItem
+  },
+  created(){
+
+  },
+  computed: {
+    todos() {
+      return this.$store.getters['todos/getTodos'];
+    }
+  },
+  mounted(){
+    console.log("mounted : ",this.todos)
+  },
+  methods: {
+    onAddBtn(){
+      this.$store.commit('modal/showModal', {
+        id: generatorID(), text:'da1kndlkandasnldnal'
+      });
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+#todo{
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: $main-bg-color;
+}
+.todo__container{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 500px;
+  height: 800px;
+  border-radius: 5px;
+  overflow: hidden;
+  transform: translate(-50%, -50%);
+  background: $todo-white-color;
+}
+.todo__container__header{
+  height: 138px;
+  padding: 20px;
+  text-align: center;
+}
+.todo__container__contents__header__btn{
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  padding: 10px;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+.todo__container__header__year{
+  font-size: 2rem;
+}
+.todo__container__header__month{
+  padding: 10px 0;
+  font-size: 1.5rem;
+}
+.todo__container__header__week{
+  display: flex;
+  position: relative;
+  height: 55px;
+  align-items: center;
+  justify-content: space-between;
+}
+.todo__container__header__week__arrows{
+  display: flex;
+  width: 4%;
+  height: 100%;
+  align-items: center;
+  cursor: pointer;
+}
+.todo__container__header__week__arrows div{
+  width: 100%;
+}
+.todo__container__header__week__days{
+  display: flex;
+  width: 82%;
+  padding: 10px;
+  margin: 0;
+  justify-content: space-between;
+}
+.todo__container__header__week__days li{
+  position: relative;
+  cursor: pointer;
+}
+.todo__container__header__week__days li:first-child{
+  color: red;
+}
+.todo__container__header__week__days .TODAY:after{
+  content: '';
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  left: 50%;
+  top: 120%;
+  transform: translateX(-50%);
+  border-radius: 100%;
+  background: $todo-done-color;
+}
+.todo__container__header__week__days .SELECTED{
+  position: relative;
+}
+.todo__container__header__week__days .SELECTED::before{
+  position: absolute;
+  content: '';
+  width: 50px;
+  height: 50px;
+  top: 42%;
+  left: 50%;
+  background: #ccc;
+  border-radius: 50%;
+  opacity: 0.4;
+  transform: translate(-50%,-50%);
+}
+
+.todo__container__contents{
+  height: 662px;
+  overflow-y: scroll;
+}
+.todo__container__contents__todoList ul{
+  padding: 0 15px;
+  margin: 0;
+}
+.todoList__title.do{
+  color: $todo-do-color;
+}
+.todoList__title.done{
+  color: $todo-done-color;
+}
+.todoList__title{
+  text-align: center;
+  padding: 5px 0;
+  font-size: 1.1rem;
+  font-weight: bold;
+  background: $main-gray-color;
+  border-top: 1px solid #e4e4e4;
+  border-bottom: 2px solid #cecece;
+}
+.todo__container__contents__todoList ul li{
+  display: flex;
+  padding: 10px 0;
+  align-items: baseline;
+  font-size: 1.4rem;
+  font-weight: normal;
+  cursor: pointer;
+  border-top: 1px solid $main-gray-color;
+  border-bottom: 1px solid $main-gray-color;
+}
+.todo__container__contents__todoList ul li:first-child{
+  border-top: none;
+}
+.todo__container__contents__todoList ul li:last-child{
+  border-bottom: none;
+}
+</style>
