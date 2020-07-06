@@ -71,7 +71,7 @@ export default {
   methods: {
     onAddBtn(){
       this.$store.commit('modal/showModal', {
-        id: generatorID(), text:'da1kndlkandasnldnal'
+        id: generatorID(), text:'TODO 에서 열림.', modify: false
       });
     }
   }

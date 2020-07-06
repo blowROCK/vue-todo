@@ -20,30 +20,29 @@
 </template>
 
 <script>
-import {generatorID} from "../static/util";
-import { mapGetters } from 'vuex';
+import { isInvalidChar } from '../static/util';
 
 export default {
   name: 'Modal',
   computed: {
     modalInfo(){
-      return this.$store.getters['modal/modalInfo'];
+      return this.$store.getters['modal/getModalData'];
     }
   },
-  data() {
+  data: function () {
     return {
+      isSubmitOk: true,
       text: null,
       tooltip: '',
-      isSubmitOk: true
-    }
+    };
   },
-  created() {
-    console.log("모달 열림/. :", modalInfo);
+  mounted() {
+    this.text = this.modalInfo.text;
   },
   methods: {
     onChange(e){
       const val = e.target.value;
-      if(this.isInvalidChar(val)){
+      if(isInvalidChar(val)){
         this.tooltip = '!@#$%^&*()_+=,.? 를 제외한 특수 문자는 금지입니다.';
         this.isSubmitOk = false;
       }else if(val.length >= 120){
@@ -60,11 +59,8 @@ export default {
     onDelete(){
 
     },
-    isInvalidChar(str){
-      const rex1 = /[^a-z|A-Z|가-힣|ㄱ-ㅎㅏ-ㅣ0-9|!@#$%^&*()_+=,.?|\n\s\r]/g;
-      return rex1.test(str);
-    },
     close(){
+      console.log("hideModal")
       this.$store.commit('modal/hideModal');
     }
   }

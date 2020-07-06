@@ -4,7 +4,8 @@ export default {
       isModalOpen: false,
       modalInfo : {
         id: null,
-        text: null
+        text: null,
+        modify: false
       }
     }
   },
@@ -17,19 +18,17 @@ export default {
     }
   },
   mutations: {
-    showModal(state, { id, text = null } ){
-      console.log(" showModal : ", id, state.isModalOpen)
+    showModal(state, { id, text = null, modify } ){
       state.isModalOpen = true;
       state.modalInfo= {
         id: id,
-        text: text
+        text: text,
+        modify: false
       }
     },
     hideModal(state){
-      state.modalInfo= {
-        id: null,
-        text: null
-      }
+      state.isModalOpen = false;
+      state.modalInfo = '';
     }
   }
 }

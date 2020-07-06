@@ -5,3 +5,8 @@ export const generatorID = function () {
 export const yyyy_mm_dd = function(date){
   return date.toISOString().substring(0, 10);
 };
+
+export const isInvalidChar = function(str){
+  const rex1 = /[^a-z|A-Z|가-힣|ㄱ-ㅎㅏ-ㅣ0-9|!@#$%^&*()_+=,.?|\n\s\r]/g;
+  return rex1.test(str);
+}
