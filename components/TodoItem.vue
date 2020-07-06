@@ -1,5 +1,5 @@
 <template>
-  <div class="todo-list-item">
+  <div class="todo-list-item" @click="modifyTodo">
     <span class="icon" @click="onToggleDone"
           :class="[this.isDone ? 'fa fa-check-circle-o' : 'fa fa-circle-o']" />
     <span class="icon" @click="onToggleImportant"
@@ -36,9 +36,23 @@ export default {
     console.log("투두 아이템 : ", this.text)
   },
   methods:{
-    onToggleDone(){
+    modifyTodo(){
+      const todo = this.$store.getters['todos/getById'](this.id);
+      this.$store.commit('modal/showModal', {
+        id: todo.id,
+        text: todo.text,
+        isDone: todo.isDone,
+        isImportant: todo.isImportant,
+        modify: true
+      });
     },
-    onToggleImportant(){
+    onToggleDone(e){
+      e.stopPropagation();
+      this.$store.commit('todos/toggleDone', { id: this.id })
+    },
+    onToggleImportant(e){
+      e.stopPropagation();
+      this.$store.commit('todos/toggleImportant', { id: this.id })
     }
   }
 }

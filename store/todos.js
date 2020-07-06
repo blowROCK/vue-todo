@@ -10,6 +10,17 @@ export default {
   getters: {
     getTodos(state){
       return state.list;
+    },
+    getById(state){
+      return function(id){
+        return state.list.find(todo => todo.id === id);
+      }
+    },
+    getDoList(state){
+      return state.list.filter(todo => todo.isDone === false);
+    },
+    getDoneList(state){
+      return state.list.filter(todo => todo.isDone === true);
     }
   },
   mutations: {
@@ -22,7 +33,15 @@ export default {
       })
     },
     deleteTodo(state, { id }){
-
+      state.list = state.list.filter(todo => {
+        return todo.id !== id
+      })
+    },
+    toggleDone(state, { id }){
+			state.list = state.list.map((todo) => todo.id === id ? { ...todo, isDone: !todo.isDone } : todo);
+    },
+    toggleImportant(state, { id }){
+			state.list = state.list.map((todo) => todo.id === id ? { ...todo, isImportant: !todo.isImportant } : todo);
     }
   }
 }

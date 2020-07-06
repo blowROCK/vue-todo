@@ -5,13 +5,13 @@
         <textarea id="textarea"
                   class="modal__content__textBox__textarea"
                   v-on:input="onChange"
-                  v-model="text"
+                  v-model="modal.text"
                   placeholder="내용을 입력 하세요."
                   maxlength="120" />
         <div id="tooltip" class="modal__content__textBox_tooltip">{{tooltip}}</div>
       </div>
       <div class="modal__content__btnBox">
-        <div id="delete" class="modal__content__textBox__delete" v-if="true" v-on:click="onDelete">Delete</div>
+        <div id="delete" class="modal__content__textBox__delete" v-if="modal.modify" v-on:click="onDelete">Delete</div>
         <div id="submit" class="modal__content__textBox__submit" @click="onSubmit">Submit</div>
       </div>
     </div>
@@ -31,13 +31,18 @@ export default {
   },
   data: function () {
     return {
+      modal: {},
       isSubmitOk: true,
-      text: null,
       tooltip: '',
     };
   },
   mounted() {
-    this.text = this.modalInfo.text;
+    this.modal = {
+      id: this.modalInfo.id,
+      text: this.modalInfo.text,
+      modify: this.modalInfo.modify
+    };
+    console.log("mounted -> this.moda", this.modal)
   },
   methods: {
     onChange(e){
@@ -54,10 +59,13 @@ export default {
       }
     },
     onSubmit() {
-
+      if(!this.isSubmitOk) return;
+      this.$store.commit('todos/addTodo', { id: this.modal.id, text: this.modal.text });
+      this.$store.commit('modal/hideModal');
     },
     onDelete(){
-
+      this.$store.commit('todos/deleteTodo', { id: this.modal.id })
+      this.$store.commit('modal/hideModal');
     },
     close(){
       console.log("hideModal")

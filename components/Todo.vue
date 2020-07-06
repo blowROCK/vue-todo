@@ -6,6 +6,7 @@
              @click="onAddBtn">
           <i class="fa fa-plus" />
         </div>
+        <Calendar />
         <div id="year" class="todo__container__header__year" />
         <div id="month" class="todo__container__header__month" />
         <div class="todo__container__header__week">
@@ -25,7 +26,10 @@
               To Do
             </div>
             <ul id="doUl">
-              <li v-bind:id="todo.id" v-for="todo in todos" >
+              <li v-for="todo in doList" 
+                  v-bind:key="todo.id" 
+                  v-bind:id="todo.id" 
+                >
                 <Todo-item
                   :id="todo.id"
                   :text="todo.text"
@@ -39,7 +43,19 @@
             <div class="todoList__title done">
               Done
             </div>
-            <ul id="doneUl" />
+            <ul id="doneUl">
+              <li v-for="todo in doneList" 
+                  v-bind:key="todo.id" 
+                  v-bind:id="todo.id" 
+                >
+                <Todo-item
+                  :id="todo.id"
+                  :text="todo.text"
+                  :isDone="todo.isDone"
+                  :isImportant="todo.isImportant"
+                />
+              </li>
+            </ul>
           </div>
         </div>
       </div>
@@ -49,21 +65,25 @@
 
 <script>
 import TodoItem from './TodoItem';
+import Calendar from './Calendar';
 import { generatorID } from '../static/util';
 
 export default {
   name: 'Todo',
   layout: 'default',
   components: {
-    TodoItem
-  },
-  created(){
-
+    TodoItem, Calendar
   },
   computed: {
-    todos() {
-      return this.$store.getters['todos/getTodos'];
-    }
+    doList() {
+      const todos = this.$store.getters['todos/getDoList'];
+      return todos.sort((a, b) => {
+        return (a.isImportant === b.isImportant) ? 0 : a.isImportant ? -1 : 1
+      })
+    },
+    doneList() {
+      return this.$store.getters['todos/getDoneList'];
+    },
   },
   mounted(){
     console.log("mounted : ",this.todos)
@@ -71,7 +91,7 @@ export default {
   methods: {
     onAddBtn(){
       this.$store.commit('modal/showModal', {
-        id: generatorID(), text:'TODO 에서 열림.', modify: false
+        id: generatorID(), modify: false
       });
     }
   }

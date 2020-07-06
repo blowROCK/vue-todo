@@ -23,7 +23,7 @@ export default {
       state.modalInfo= {
         id: id,
         text: text,
-        modify: false
+        modify: modify
       }
     },
     hideModal(state){
