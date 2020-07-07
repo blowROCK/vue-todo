@@ -26,10 +26,7 @@
               To Do
             </div>
             <ul id="doUl">
-              <li v-for="todo in doList" 
-                  v-bind:key="todo.id" 
-                  v-bind:id="todo.id" 
-                >
+              <li v-for="(todo, index) in doList" :key="index" :id="todo.id">
                 <Todo-item
                   :id="todo.id"
                   :text="todo.text"
@@ -44,9 +41,9 @@
               Done
             </div>
             <ul id="doneUl">
-              <li v-for="todo in doneList" 
-                  v-bind:key="todo.id" 
-                  v-bind:id="todo.id" 
+              <li v-for="todo in doneList"
+                  v-bind:key="todo.id"
+                  v-bind:id="todo.id"
                 >
                 <Todo-item
                   :id="todo.id"
@@ -76,22 +73,29 @@ export default {
   },
   computed: {
     doList() {
-      const todos = this.$store.getters['todos/getDoList'];
-      return todos.sort((a, b) => {
+      const selectDate = this.$store.getters['calendar/getSelectedDate'];
+      const doList = this.$store.getters['todos/getTodoListbyTypeNDate']('do', selectDate);
+      return doList.sort((a, b) => {
         return (a.isImportant === b.isImportant) ? 0 : a.isImportant ? -1 : 1
       })
     },
     doneList() {
-      return this.$store.getters['todos/getDoneList'];
+      const selectDate = this.$store.getters['calendar/getSelectedDate'];
+      return this.$store.getters['todos/getTodoListbyTypeNDate']('done', selectDate);
     },
   },
+  updated(){
+    const test = this.$store.getters['todos/getAllTodos'];
+    this.$store.commit('todos/saveTodos');
+  },
   mounted(){
-    console.log("mounted : ",this.todos)
+    this.$store.commit('todos/loadTodos');
   },
   methods: {
     onAddBtn(){
       this.$store.commit('modal/showModal', {
-        id: generatorID(), modify: false
+        id: generatorID(), modify: false,
+        date: this.$store.getters['calendar/getSelectedDate']
       });
     }
   }
@@ -128,70 +132,6 @@ export default {
   padding: 10px;
   font-size: 1.5rem;
   cursor: pointer;
-}
-.todo__container__header__year{
-  font-size: 2rem;
-}
-.todo__container__header__month{
-  padding: 10px 0;
-  font-size: 1.5rem;
-}
-.todo__container__header__week{
-  display: flex;
-  position: relative;
-  height: 55px;
-  align-items: center;
-  justify-content: space-between;
-}
-.todo__container__header__week__arrows{
-  display: flex;
-  width: 4%;
-  height: 100%;
-  align-items: center;
-  cursor: pointer;
-}
-.todo__container__header__week__arrows div{
-  width: 100%;
-}
-.todo__container__header__week__days{
-  display: flex;
-  width: 82%;
-  padding: 10px;
-  margin: 0;
-  justify-content: space-between;
-}
-.todo__container__header__week__days li{
-  position: relative;
-  cursor: pointer;
-}
-.todo__container__header__week__days li:first-child{
-  color: red;
-}
-.todo__container__header__week__days .TODAY:after{
-  content: '';
-  position: absolute;
-  width: 5px;
-  height: 5px;
-  left: 50%;
-  top: 120%;
-  transform: translateX(-50%);
-  border-radius: 100%;
-  background: $todo-done-color;
-}
-.todo__container__header__week__days .SELECTED{
-  position: relative;
-}
-.todo__container__header__week__days .SELECTED::before{
-  position: absolute;
-  content: '';
-  width: 50px;
-  height: 50px;
-  top: 42%;
-  left: 50%;
-  background: #ccc;
-  border-radius: 50%;
-  opacity: 0.4;
-  transform: translate(-50%,-50%);
 }
 
 .todo__container__contents{

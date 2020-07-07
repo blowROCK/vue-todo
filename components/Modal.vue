@@ -40,9 +40,9 @@ export default {
     this.modal = {
       id: this.modalInfo.id,
       text: this.modalInfo.text,
-      modify: this.modalInfo.modify
+      modify: this.modalInfo.modify,
+      date: this.modalInfo.date
     };
-    console.log("mounted -> this.moda", this.modal)
   },
   methods: {
     onChange(e){
@@ -60,7 +60,11 @@ export default {
     },
     onSubmit() {
       if(!this.isSubmitOk) return;
-      this.$store.commit('todos/addTodo', { id: this.modal.id, text: this.modal.text });
+      this.$store.commit('todos/addTodo', {
+        id: this.modal.id,
+        text: this.modal.text,
+        date: this.modal.date
+      });
       this.$store.commit('modal/hideModal');
     },
     onDelete(){
@@ -68,7 +72,6 @@ export default {
       this.$store.commit('modal/hideModal');
     },
     close(){
-      console.log("hideModal")
       this.$store.commit('modal/hideModal');
     }
   }

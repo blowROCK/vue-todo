@@ -18,12 +18,13 @@ export default {
     }
   },
   mutations: {
-    showModal(state, { id, text = null, modify } ){
+    showModal(state, { id, text = null, modify, date } ){
       state.isModalOpen = true;
       state.modalInfo= {
         id: id,
         text: text,
-        modify: modify
+        modify: modify,
+        date: date
       }
     },
     hideModal(state){

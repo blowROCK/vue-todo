@@ -1,14 +1,13 @@
+const Storage = window.localStorage;
+
 export default {
   state(){
     return{
-      list: [
-        {id:'asdkan22', text:'TEST TODO 1', isImportant: true, isDone: false},
-        {id:'asdkan1',text:'DONE TODO 2', isImportant: true, isDone: true}
-      ]
+      list: []
     }
   },
   getters: {
-    getTodos(state){
+    getAllTodos(state){
       return state.list;
     },
     getById(state){
@@ -16,18 +15,25 @@ export default {
         return state.list.find(todo => todo.id === id);
       }
     },
-    getDoList(state){
-      return state.list.filter(todo => todo.isDone === false);
+    getTodoListbyTypeNDate(state){
+      return function (type, date) {
+        return state.list
+          .filter(todo => {
+            return ( todo.isDone === (type === 'done'))
+              && new Date(todo.date).toDateString() === date.toDateString()
+          })
+      }
     },
     getDoneList(state){
       return state.list.filter(todo => todo.isDone === true);
     }
   },
   mutations: {
-    addTodo(state, { id, text }){
+    addTodo(state, { id, text, date }){
       state.list.push({
         id: id,
         text: text,
+        date: date,
         isDone: false,
         isImportant: false
       })
@@ -42,6 +48,14 @@ export default {
     },
     toggleImportant(state, { id }){
 			state.list = state.list.map((todo) => todo.id === id ? { ...todo, isImportant: !todo.isImportant } : todo);
+    },
+    saveTodos(state){
+      Storage.setItem("TodoList", JSON.stringify(state.list));
+    },
+    loadTodos(state) {
+      const storageList = Storage.getItem("TodoList");
+      if(storageList === null) return [];
+      state.list = JSON.parse(storageList);
     }
   }
 }

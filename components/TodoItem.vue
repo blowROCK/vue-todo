@@ -30,11 +30,6 @@ export default {
       default: false
     }
   },
-  computed: {
-  },
-  mounted() {
-    console.log("투두 아이템 : ", this.text)
-  },
   methods:{
     modifyTodo(){
       const todo = this.$store.getters['todos/getById'](this.id);
